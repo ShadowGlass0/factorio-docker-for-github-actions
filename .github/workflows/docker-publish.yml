@@ -1,4 +1,4 @@
-name: Docker Publish
+name: Docker Build & Push
 
 on:
   push:
@@ -11,11 +11,11 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
+  lint:
+    name: Lint Code Base
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -25,6 +25,16 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    name: Build & push image
+    needs: lint
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
       - name: Log into registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request'
         uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
