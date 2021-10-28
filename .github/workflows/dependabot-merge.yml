@@ -16,8 +16,6 @@ jobs:
         uses: dependabot/fetch-metadata@v1.1.1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Log dependabot metadata
-        run: echo ${{ steps.dependabot-metadata.outputs.updated-dependencies-json }} | jq '.'
       - name: Enable auto-merge for Dependabot PRs
         if: ${{contains(steps.dependabot-metadata.outputs.dependency-names, 'factoriotools/factorio') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
         run: gh pr merge --auto --merge "$PR_URL"
