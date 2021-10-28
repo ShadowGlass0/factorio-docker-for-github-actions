@@ -1,11 +1,23 @@
 version: 2
 updates:
   - directory: "/"
-    open-pull-requests-limit: 5
     package-ecosystem: "docker"
-    rebase-strategy: auto
+    ignore:
+      - update-types: ["version-update:semver-major", "version-update:semver-minor"]
     schedule:
       interval: "daily"
+      time: "10:00"
+      timezone: "UTC"
+    pull-request-branch-name:
+      separator: "-"
+  - directory: "/"
+    package-ecosystem: "docker"
+    ignore:
+      - update-types: ["version-update:semver-patch"]
+    schedule:
+      interval: "daily"
+      time: "10:00"
+      timezone: "UTC"
     assignees:
       - "ShadowGlass0"
     pull-request-branch-name:

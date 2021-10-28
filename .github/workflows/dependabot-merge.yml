@@ -1,0 +1,26 @@
+name: Dependabot auto-merge
+
+on: pull_request_target
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v1.1.1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Log dependabot metadata
+        run: echo ${{ steps.dependabot-metadata.outputs.updated-dependencies-json }} | jq '.'
+      - name: Comment merge
+        if: ${{ steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
+        uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: "@dependabot merge"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
