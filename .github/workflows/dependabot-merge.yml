@@ -2,10 +2,6 @@ name: Dependabot auto-merge
 
 on: pull_request_target
 
-permissions:
-  pull-requests: write
-  contents: write
-
 jobs:
   dependabot:
     runs-on: ubuntu-latest
@@ -16,9 +12,11 @@ jobs:
         uses: dependabot/fetch-metadata@v1.1.1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Enable auto-merge for Dependabot PRs
+      - name: Merge Dependabot PRs
+        uses: actions/github-script@0.3.0
         if: ${{contains(steps.dependabot-metadata.outputs.dependency-names, 'factoriotools/factorio') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
-        run: gh pr merge --auto --merge "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          github-token: ${{ secrets.SHADOWGLASS_PAT }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
+            github.issues.createComment({ issue_number, owner, repo, body: '@dependabot merge' });
