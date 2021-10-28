@@ -16,10 +16,8 @@ jobs:
         uses: dependabot/fetch-metadata@v1.1.1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Log dependabot metadata
-        run: echo ${{ steps.dependabot-metadata.outputs.updated-dependencies-json }} | jq '.'
       - name: Comment merge
-        if: ${{ steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
+        if: ${{contains(steps.dependabot-metadata.outputs.dependency-names, 'factoriotools/factorio') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
         uses: thollander/actions-comment-pull-request@v1
         with:
           message: "@dependabot merge"
