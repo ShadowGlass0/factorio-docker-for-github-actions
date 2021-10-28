@@ -2,4 +2,4 @@ name: 'Test docker build'
 description: 'Local test of the container'
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: '~/Dockerfile'
