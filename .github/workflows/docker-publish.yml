@@ -50,20 +50,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Setup git config
-        if: github.event_name != 'pull_request'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "<>"
       - name: Get version
         id: getver
         if: github.event_name != 'pull_request'
         run: echo "::set-output name=version::v""$(grep "FROM factoriotools/factorio" Dockerfile | awk -F ':' '{print $2}' | xargs)"
       - name: Add tag
         if: github.event_name != 'pull_request'
-        run: |
-          git tag -f ${{ steps.getver.outputs.version }} -m "Factorio release ${{ steps.getver.outputs.version }}"
-          git push -f origin --tags
+        uses: richardsimko/update-tag@v1
+        with:
+          tag_name: ${{ steps.getver.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Add major/minor tags
         if: github.event_name != 'pull_request'
         uses: fischerscode/tagger@v0.1
