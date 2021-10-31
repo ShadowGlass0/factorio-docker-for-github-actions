@@ -53,7 +53,7 @@ jobs:
       - name: Get version
         id: getver
         if: github.event_name != 'pull_request'
-        run: echo "::set-output name=version::v"$(grep "FROM factoriotools/factorio" Dockerfile | awk -F ':' {'print $2'} | xargs)
+        run: echo "::set-output name=version::v""$(grep "FROM factoriotools/factorio" Dockerfile | awk -F ':' {'print $2'} | xargs)"
       - name: Add tag
         if: github.event_name != 'pull_request'
         run: |
