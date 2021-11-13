@@ -13,10 +13,10 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Merge Dependabot PRs
-        uses: actions/github-script@0.3.0
+        uses: actions/github-script@v5
         if: ${{contains(steps.dependabot-metadata.outputs.dependency-names, 'factoriotools/factorio') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
         with:
           github-token: ${{ secrets.SHADOWGLASS_PAT }}
           script: |
             const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-            github.issues.createComment({ issue_number, owner, repo, body: '@dependabot merge' });
+            github.rest.issues.createComment({ issue_number, owner, repo, body: '@dependabot merge' });
