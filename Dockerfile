@@ -1,4 +1,4 @@
-FROM factoriotools/factorio:1.1.73
+FROM factoriotools/factorio:1.1.74
 
 COPY ./entrypoint.sh /entrypoint.sh
 
