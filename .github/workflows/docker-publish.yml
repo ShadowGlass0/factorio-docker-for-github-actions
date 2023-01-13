@@ -22,7 +22,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Lint Code Base
         uses: github/super-linter/slim@v4
         env:
@@ -37,7 +37,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Test
         uses: ./.github/actions/docker-test
   build:
@@ -49,15 +49,15 @@ jobs:
       packages: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Get version
         id: getver
         if: github.event_name != 'pull_request'
         run: |
           v_patch=$(grep "FROM factoriotools/factorio" Dockerfile | awk -F ':' '{print $2}' | xargs)
-          echo "::set-output name=v_patch::v$v_patch"
-          echo "::set-output name=v_minor::v$(echo "$v_patch" | awk -F '.' '{print $1"."$2}')"
-          echo "::set-output name=v_major::v$(echo "$v_patch" | awk -F '.' '{print $1}')"
+          echo "v_patch=v$v_patch" >> $GITHUB_OUTPUT
+          echo "v_minor=v$(echo "$v_patch" | awk -F '.' '{print $1"."$2}')" >> $GITHUB_OUTPUT
+          echo "v_major=v$(echo "$v_patch" | awk -F '.' '{print $1}')" >> $GITHUB_OUTPUT
       - name: Add patch tag
         if: github.event_name != 'pull_request'
         uses: richardsimko/update-tag@v1
@@ -81,18 +81,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Log into registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}

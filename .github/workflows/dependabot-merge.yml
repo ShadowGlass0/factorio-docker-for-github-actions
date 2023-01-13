@@ -9,11 +9,11 @@ jobs:
     steps:
       - name: Dependabot metadata
         id: dependabot-metadata
-        uses: dependabot/fetch-metadata@v1.1.1
+        uses: dependabot/fetch-metadata@v1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Merge Dependabot PRs
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         if: ${{contains(steps.dependabot-metadata.outputs.dependency-names, 'factoriotools/factorio') && steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' }}
         with:
           github-token: ${{ secrets.SHADOWGLASS_PAT }}
