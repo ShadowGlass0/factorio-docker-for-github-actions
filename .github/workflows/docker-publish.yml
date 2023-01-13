@@ -55,9 +55,11 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           v_patch=$(grep "FROM factoriotools/factorio" Dockerfile | awk -F ':' '{print $2}' | xargs)
-          echo "v_patch=v$v_patch" >> $GITHUB_OUTPUT
-          echo "v_minor=v$(echo "$v_patch" | awk -F '.' '{print $1"."$2}')" >> $GITHUB_OUTPUT
-          echo "v_major=v$(echo "$v_patch" | awk -F '.' '{print $1}')" >> $GITHUB_OUTPUT
+          {
+            echo "v_patch=v$v_patch" 
+            echo "v_minor=v$(echo "$v_patch" | awk -F '.' '{print $1"."$2}')"
+            echo "v_major=v$(echo "$v_patch" | awk -F '.' '{print $1}')"
+          } >> $GITHUB_OUTPUT
       - name: Add patch tag
         if: github.event_name != 'pull_request'
         uses: richardsimko/update-tag@v1
