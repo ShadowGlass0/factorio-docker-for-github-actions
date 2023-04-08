@@ -8,5 +8,3 @@ updates:
       timezone: "UTC"
     pull-request-branch-name:
       separator: "-"
-    assignees:
-      - "ShadowGlass0"

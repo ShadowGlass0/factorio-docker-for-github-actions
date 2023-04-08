@@ -54,7 +54,7 @@ jobs:
         id: getver
         if: github.event_name != 'pull_request'
         run: |
-          v_patch=$(grep "FROM factoriotools/factorio" Dockerfile | awk -F ':' '{print $2}' | xargs)
+          v_patch=$(grep "FROM ghcr.io/bplein/factorio-docker" Dockerfile | awk -F ':' '{print $2}' | xargs)
           {
             echo "v_patch=v$v_patch" 
             echo "v_minor=v$(echo "$v_patch" | awk -F '.' '{print $1"."$2}')"
