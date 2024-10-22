@@ -1,4 +1,4 @@
-FROM ghcr.io/bplein/factorio-docker:1.1.110
+FROM ghcr.io/bplein/factorio-docker:2.0.8
 
 COPY ./entrypoint.sh /entrypoint.sh
 
