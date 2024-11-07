@@ -5,6 +5,14 @@ updates:
     schedule:
       interval: "daily"
       time: "10:00"
-      timezone: "UTC"
+      timezone: "Etc/UTC"
+    pull-request-branch-name:
+      separator: "-"
+  - directory: "/"
+    package-ecosystem: "github-actions"
+    schedule:
+      interval: "daily"
+      time: "10:00"
+      timezone: "Etc/UTC"
     pull-request-branch-name:
       separator: "-"
