@@ -1,5 +1,5 @@
 # checkov:skip=CKV_DOCKER_3
-FROM ghcr.io/bplein/factorio-docker:2.0.20
+FROM ghcr.io/bplein/factorio-docker:2.0.21
 
 COPY ./entrypoint.sh /entrypoint.sh
 
