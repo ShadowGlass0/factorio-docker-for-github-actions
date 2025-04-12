@@ -17,7 +17,7 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Merge Dependabot PRs
         uses: actions/github-script@v7
-        if: ${{contains(steps.dependabot-metadata.outputs.dependency-names, 'bplein/factorio-docker')}}
+        if: ${{contains(steps.dependabot-metadata.outputs.dependency-names, 'factoriotools/factorio')}}
         with:
           github-token: ${{ secrets.SHADOWGLASS_PAT }}
           script: |
