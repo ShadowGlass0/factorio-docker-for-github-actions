@@ -101,6 +101,32 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get current latest image version
+        id: latestver
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        run: |
+          image=$(printf '%s' "${REGISTRY}/${IMAGE_NAME}:latest" | tr '[:upper:]' '[:lower:]')
+          old_patch=""
+
+          if docker pull "$image"; then
+            old_patch=$(docker image inspect "$image" --format '{{ index .Config.Labels "factorio.version" }}' || true)
+            old_patch=$(printf '%s' "$old_patch" | tr -d '\r' | xargs)
+          fi
+
+          if [ "$old_patch" = "<no value>" ]; then
+            old_patch=""
+          fi
+
+          changed=false
+          if [ -n "$old_patch" ] && [ "$old_patch" != "${{ steps.getver.outputs.docker_patch }}" ]; then
+            changed=true
+          fi
+
+          {
+            echo "image=$image"
+            echo "docker_patch=$old_patch"
+            echo "changed=$changed"
+          } >> "$GITHUB_OUTPUT"
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v6
@@ -122,3 +148,13 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Discord notification
+        if: github.event_name != 'pull_request' && steps.latestver.outputs.changed == 'true'
+        uses: Ilshidur/action-discord@0.4.0
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: >
+            Published ${{ steps.latestver.outputs.image }}:
+            Factorio patch version ${{ steps.latestver.outputs.docker_patch }}
+            -> ${{ steps.getver.outputs.docker_patch }}.
