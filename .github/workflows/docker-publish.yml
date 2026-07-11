@@ -153,8 +153,24 @@ jobs:
         uses: Ilshidur/action-discord@0.4.0
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: Factorio Test Runner
+          DISCORD_EMBEDS: >-
+            [{
+              "title": "Factorio Test Runner Image Updated",
+              "description": "`${{ steps.latestver.outputs.image }}` is now published with a new Factorio patch version.",
+              "color": 16776960,
+              "fields": [
+                {
+                  "name": "Previous Factorio version",
+                  "value": "${{ steps.latestver.outputs.docker_patch }}",
+                  "inline": true
+                },
+                {
+                  "name": "New Factorio version",
+                  "value": "${{ steps.getver.outputs.docker_patch }}",
+                  "inline": true
+                }
+              ]
+            }]
         with:
-          args: >
-            Published ${{ steps.latestver.outputs.image }}:
-            Factorio patch version ${{ steps.latestver.outputs.docker_patch }}
-            -> ${{ steps.getver.outputs.docker_patch }}.
+          args: ""
