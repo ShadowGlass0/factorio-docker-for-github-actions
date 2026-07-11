@@ -61,13 +61,17 @@ jobs:
         uses: actions/checkout@v7
       - name: Get version
         id: getver
-        if: github.event_name != 'pull_request'
         run: |
-          v_patch=$(grep "FROM factoriotools/factorio" Dockerfile | awk -F ':' '{print $2}' | xargs)
+          v_patch=$(grep "FROM factoriotools/factorio" Dockerfile | awk -F ':' '{print $2}' | tr -d '\r' | xargs)
+          v_minor=$(echo "$v_patch" | awk -F '.' '{print $1"."$2}')
+          v_major=$(echo "$v_patch" | awk -F '.' '{print $1}')
           {
-            echo "v_patch=v$v_patch" 
-            echo "v_minor=v$(echo "$v_patch" | awk -F '.' '{print $1"."$2}')"
-            echo "v_major=v$(echo "$v_patch" | awk -F '.' '{print $1}')"
+            echo "v_patch=v$v_patch"
+            echo "v_minor=v$v_minor"
+            echo "v_major=v$v_major"
+            echo "docker_patch=$v_patch"
+            echo "docker_minor=$v_minor"
+            echo "docker_major=$v_major"
           } >> "$GITHUB_OUTPUT"
       - name: Add patch tag
         if: github.event_name != 'pull_request'
@@ -102,6 +106,15 @@ jobs:
         uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ steps.getver.outputs.docker_patch }},enable={{is_default_branch}},priority=900
+            type=raw,value=${{ steps.getver.outputs.docker_minor }},enable={{is_default_branch}},priority=800
+            type=raw,value=${{ steps.getver.outputs.docker_major }},enable={{is_default_branch}},priority=700
+            type=raw,value=latest,enable={{is_default_branch}},priority=600
+            type=ref,event=branch,priority=500
+            type=ref,event=pr
+          labels: |
+            maintainer=${{ github.server_url }}/${{ github.repository }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
         with:
