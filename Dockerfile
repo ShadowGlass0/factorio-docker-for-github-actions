@@ -1,5 +1,5 @@
 # checkov:skip=CKV_DOCKER_3
-FROM factoriotools/factorio:2.1.14
+FROM factoriotools/factorio:2.1.16
 
 COPY ./entrypoint.sh /entrypoint.sh
 
