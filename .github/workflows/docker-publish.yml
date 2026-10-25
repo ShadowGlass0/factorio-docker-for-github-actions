@@ -75,21 +75,21 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: Add patch tag
         if: github.event_name != 'pull_request'
-        uses: richardsimko/update-tag@v2
+        uses: richardsimko/update-tag@v3
         with:
           tag_name: ${{ steps.getver.outputs.v_patch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Add minor tag
         if: github.event_name != 'pull_request'
-        uses: richardsimko/update-tag@v2
+        uses: richardsimko/update-tag@v3
         with:
           tag_name: ${{ steps.getver.outputs.v_minor }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Add major tag
         if: github.event_name != 'pull_request'
-        uses: richardsimko/update-tag@v2
+        uses: richardsimko/update-tag@v3
         with:
           tag_name: ${{ steps.getver.outputs.v_major }}
         env:
